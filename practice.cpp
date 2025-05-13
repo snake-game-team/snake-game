@@ -2,7 +2,7 @@
 
 int main() {
     initscr();
-    printw("Hello World!!")
+    printw("Hello World!!");
     refresh();
     getch();
     endwin();
