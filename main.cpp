@@ -1,7 +1,6 @@
 #include <ncurses.h>
-#include <thread>
 #include "SnakeGame.h"
-#include <chrono>
+#include <chrono> // 시간설정
 using namespace std::chrono;
 
 int main(void){

@@ -1,5 +1,5 @@
 #include <ncurses.h>
-#pragma once
+#pragma once // 중복 정의 제어
 #include "Snake.h"
 
 class Map {
