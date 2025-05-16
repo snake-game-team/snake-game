@@ -16,18 +16,21 @@ public:
     }
 
     void initialize(int stagenum){  // 초기화
+        nodelay(map, TRUE);  // 입력이 없을 때도 입력을 기다리지 않고 뱀 이동
         clear();
-        updateScore(4);
+        updateScore(4); // 초기 뱀 길이인 4로 호출
         for (int row = 0; row < 21; row++)
         {
             for (int col = 0; col < 39; col++) { 
-                mvwaddch(map, row, col, stage[stagenum][row][col]);
+                mvwaddch(map, row, col, stage[stagenum][row][col]); // 스테이지에 맞게 맵 출력
             }
         }
         refresh();
     }
 
-    void updateScore(int current){  // 스코어보드 초기화
+    void updateScore(int current){  
+        // 스코어보드 초기화
+        // 출력 확인을 위해 멤버 변수로 넣어놨지만 current처럼 함수와 연결 필요
         werase(score);
         mvwprintw(score, 0, 1, "Score Board");
         mvwprintw(score, 2, 1, "B : %d / %d", current, max);
@@ -38,6 +41,7 @@ public:
 
         werase(mission);
         mvwprintw(mission, 0, 1, "Mission");
+        // 미션보드 초기화 필요
         wrefresh(mission);
     }
 

@@ -46,7 +46,8 @@ public:
         {
             snake.pop();
         }
-
+        
+        // 뱀의 초기 상태 큐에 삽입
         snake.push(SnakePiece(1, 1, '#'));
         snake.push(SnakePiece(1, 2, '#'));
         snake.push(SnakePiece(1, 3, '#'));
@@ -60,6 +61,7 @@ public:
         snake.push(piece);
     }
 
+    // 머리 쪽 부분 삭제
     void removePiece(){
         snake.pop();
     }
@@ -81,9 +83,10 @@ public:
     }
 
     int getSize(){
-        return snake.size() - 1;
+        return snake.size();
     }
 
+    // 현재 방향에 따라 머리 위치를 기준으로 다음 위치 설정
     SnakePiece nextHead(){
         int row = head().getY();
         int col = head().getX();

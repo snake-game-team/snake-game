@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <thread>
 #include "SnakeGame.h"
 #include <chrono>
 using namespace std::chrono;
@@ -10,16 +11,11 @@ int main(void){
     curs_set(0);  // 커서 미표시
     nodelay(stdscr, TRUE);
 
-    auto last_move = steady_clock::now();
-    SnakeGame game(21, 39);
+    SnakeGame game(21, 39);  // 높이 21, 너비 39로 게임 화면 설정
     game.redraw();
-    while (1){
-        int ch = getch();  // 2단계 테스트를 위함입니다. 게임오버 조건이 생기면 지워주세요.
-        if (ch == 'q')
-            break;
-
-        game.UserInput(ch);  // 게임오버 조건이 생기면 UserInput 함수를 수정해주세요.
-        game.runGame(last_move);
+    while (!game.checkOver()){
+        game.UserInput();
+        game.runGame();
         game.redraw();
     }
     getch();
