@@ -59,7 +59,7 @@ public:
         snake.push(piece);
     }
 
-    // 머리 쪽 부분 삭제
+    // 꼬리 쪽 부분 삭제
     void removePiece(){
         snake.pop();
     }
