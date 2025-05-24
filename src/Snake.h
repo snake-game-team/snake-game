@@ -14,11 +14,11 @@ public:
     // row, col, icon을 각각 y, x, ch로 초기화
     SnakePiece(int y, int x, char ch) : row(y), col(x), icon(ch) {}
 
-    int getX(){
+    int getX() const {
         return col;
     }
 
-    int getY(){
+    int getY() const {
         return row;
     }
 
