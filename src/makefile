@@ -1,7 +1,11 @@
-all : main
+SRC = main.cpp
+HEADERS = SnakeGame.h Snake.h Map.h Item.h ItemManager.h
+TARGET = main
 
-main : main.cpp *.h
-	g++ -o main main.cpp -lncurses
+all: $(TARGET)
+
+$(TARGET): $(SRC) $(HEADERS)
+	g++ -o $(TARGET) $(SRC) -lncurses
 
 clean:
-	rm -f main
+	rm -f $(TARGET)
