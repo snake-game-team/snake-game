@@ -4,6 +4,7 @@
 using namespace std::chrono;
 
 int main(void){
+    srand(time(NULL));
     initscr();
     refresh();
     noecho(); // 입력된 키 미표시
