@@ -4,6 +4,7 @@
 #include "Snake.h"
 #include <vector>
 #include <cstdlib>
+#include <ncurses.h>
 
 class GateManager {
 private:
@@ -47,8 +48,8 @@ public:
         gate2.setPosition(pos2.first, pos2.second);
 
         // 맵에 표시
-        map.addChar(pos1.first, pos1.second, '█');
-        map.addChar(pos2.first, pos2.second, '█');
+        map.addChar(pos1.first, pos1.second, ACS_CKBOARD); // ACS_CKBOARD =='█'
+        map.addChar(pos2.first, pos2.second, ACS_CKBOARD);
         gateActive = true;
     }
 
