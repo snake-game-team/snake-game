@@ -53,7 +53,7 @@ public:
         return game_over;
     }
 
-    // 사용자 입력 처리
+    // 사용자 입력에 따라 진행방향 설정
     void userInput() { 
         int input = map.getInput();
         if (input == ERR) return;
@@ -91,19 +91,6 @@ public:
     bool isTimeToMove() { 
         auto now = steady_clock::now();
         return duration_cast<milliseconds>(now - last_move).count() >= moveDelay;
-    }
-
-    // 게임 상태 업데이트
-    void updateGame() { 
-        SnakePiece next = snake.nextHead();
-        auto item = itemManager.checkCollision(next);
-
-        if (item) {
-            handleItemCollision(next, *item);
-        } else {
-            moveSnakeToNext(next);
-        }
-        itemManager.update(map, snake);
     }
 
     void moveSnakeToNext(SnakePiece next){
@@ -145,7 +132,7 @@ public:
         snake.head().setIcon('%');
         map.addChar(snake.head().getY(), snake.head().getX(), '%');
         
-        
+
         switch(itemType){
             case ItemType::GROWTH: // 아무 것도 안 함(꼬리 유지)
                 break;
