@@ -27,9 +27,13 @@ public:
             userInput();
             if (isTimeToMove()) {
                 last_move = steady_clock::now();
-                updateGame();
-            }
-            redraw();
+
+                // 다음 위치로 이동 및 처리
+                moveSnakeToNext(snake.nextHead());                         
+
+                itemManager.update(map, snake);
+                redraw();
+            }    
         }
     }
 
@@ -102,53 +106,58 @@ public:
         itemManager.update(map, snake);
     }
 
-    // 아이템 충돌 처리
-    void handleItemCollision(const SnakePiece& next, ItemType itemType) {
-        if (itemType == ItemType::GROWTH) {
-            snake.head().setIcon('#');
-            map.addChar(snake.head().getY(), snake.head().getX(), '#');
-
-            snake.addPiece(next);
-            map.addChar(next.getY(), next.getX(), '%');
-        } else if (itemType == ItemType::POISON) {
-            if (snake.getSize() <= 3) {
-                game_over = true;
-                return;
-            }
-            map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
-            snake.removePiece();
-
-            snake.head().setIcon('#');
-            map.addChar(snake.head().getY(), snake.head().getX(), '#');
-
-            snake.addPiece(next);
-            map.addChar(next.getY(), next.getX(), '%');
-        }
-    }
-
-     // 일반 이동 처리
     void moveSnakeToNext(SnakePiece next){
         int nextRow = next.getY();
         int nextCol = next.getX();
 
-        if (map.getChar(nextRow, nextCol) != ' ') game_over = true; // 벽이거나 자신의 몸통일 때
-        else {
-            // snake의 꼬리 위치에 있는 icon을 ' '로 설정
+        // 벽 또는 몸통 충돌 체크
+        if (map.getChar(nextRow, nextCol) != ' ') { 
+            game_over = true;
+            return;
+        }
+
+        auto item = itemManager.checkCollision(next);
+        if (item) {  // 아이템 충돌
+            handleItemCollision(next, *item);
+        } else { // 평범한 이동
+
+            // 꼬리 제거
             map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
-            // snake의 꼬리 부분을 없앤다
             snake.removePiece();
-
-            // snake의 머리 부분의 icon을 '#'로 설정
+            
+            // 머리 추가
             snake.head().setIcon('#');
-            // 게임 창에도 똑같이 반영
             map.addChar(snake.head().getY(), snake.head().getX(), '#');
-
-            // snake의 머리 부분을 next로 설정
             snake.addPiece(next);
-            // snake의 머리 부분의 icon을 '%'로 설정
             snake.head().setIcon('%');
-            // 게임 창에도 똑같이 반영
             map.addChar(snake.head().getY(), snake.head().getX(), '%');
+        }
+    }
+
+    
+    // 아이템 효과 처리
+    void handleItemCollision(const SnakePiece& next, ItemType itemType) {
+        
+        // 머리 추가(공통)
+        snake.head().setIcon('#');
+        map.addChar(snake.head().getY(), snake.head().getX(), '#');
+        snake.addPiece(next);
+        snake.head().setIcon('%');
+        map.addChar(snake.head().getY(), snake.head().getX(), '%');
+        
+        
+        switch(itemType){
+            case ItemType::GROWTH: // 아무 것도 안 함(꼬리 유지)
+                break;
+
+            case ItemType::POISON: // 꼬리 추가 제거
+                map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
+                snake.removePiece();
+
+                if(snake.getSize() <= 3){
+                    game_over = true;
+                } 
+                break;
         }
     }
 
