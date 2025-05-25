@@ -39,7 +39,9 @@ public:
                 last_move = steady_clock::now();
 
                 // 다음 위치로 이동 및 처리
-                moveSnakeToNext(snake.nextHead());                         
+                moveSnakeToNext(snake.nextHead());   
+                
+                updateGateIfNeeded(); // 뱀 길이(10) 조건에 따른 Gate 생성
 
                 itemManager.update(map, snake);
                 redraw();
@@ -97,6 +99,13 @@ public:
     bool isTimeToMove() { 
         auto now = steady_clock::now();
         return duration_cast<milliseconds>(now - last_move).count() >= moveDelay;
+    }
+
+    // 뱀 길이 조건에 따른 Gate 생성
+    void updateGateIfNeeded() {
+        if (!gateManager.isActive() && snake.getSize() >= 10) {
+            gateManager.createGates(map);
+        }
     }
 
     void moveSnakeToNext(SnakePiece next){
