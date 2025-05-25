@@ -44,6 +44,7 @@ public:
                 updateGateIfNeeded(); // 뱀 길이(10) 조건에 따른 Gate 생성
 
                 itemManager.update(map, snake);
+                gateManager.update(map);
                 redraw();
             }    
         }

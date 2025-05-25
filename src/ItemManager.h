@@ -10,7 +10,7 @@ class ItemManager {
 private: 
     std::vector<Item> items; // 아이템 저장 벡터
     int maxItemCount = 3; // 동시 출현 가능 아이템 수
-    int lifetime = 5; // 아이템 수명(초)
+    int lifetime = 5; // 아이템 수명(초): item은 하나씩 시간 관리
     int growthCount = 0;
     int poisonCount = 0;
 public:

@@ -11,11 +11,20 @@ private:
     Gate gate2;
     bool gateActive = false;
     int gateUseCount = 0; // 게이트 사용 횟수 카운트
+    steady_clock::time_point lastGateChangeTime; 
+    int lifetime = 10; // 게이트 수명(초): gate는 한 쌍으로 시간 관리
 public:
     void createGates(Map& map) {
-        std::vector<std::pair<int, int>> wallPositions;
 
-        // Wall 목록 수집
+        // 기존 Gate 지우기
+        if (gateActive) {
+            map.addChar(gate1.getY(), gate1.getX(), '*'); // Wall으로 복원
+            map.addChar(gate2.getY(), gate2.getX(), '*');
+            gateActive = false;
+        }
+
+        // Wall 위치 다시 탐색 후 Gate 새로 생성
+        std::vector<std::pair<int, int>> wallPositions;
         for (int y = 0; y < 21; ++y) {
             for (int x = 0; x < 39; ++x) {
                 char ch = map.getChar(y, x);
@@ -25,7 +34,7 @@ public:
             }
         }
 
-        if (wallPositions.size() < 2) return;
+        if (wallPositions.size() < 2) return; 
 
         // 무작위로 두 개 선택
         auto pos1 = wallPositions[rand() % wallPositions.size()];
@@ -41,6 +50,16 @@ public:
         map.addChar(pos1.first, pos1.second, '█');
         map.addChar(pos2.first, pos2.second, '█');
         gateActive = true;
+    }
+
+    // 일정 시간 지났는지 확인 후 Gate 재생성
+    void update(Map& map) {
+        auto now = steady_clock::now();
+        auto elapsed = duration_cast<seconds>(now - lastGateChangeTime).count();
+
+        if (elapsed >= gateChangeIntervalSec) {
+            createGates(map);
+        }
     }
 
     bool isGate(int y, int x) const {
