@@ -64,11 +64,11 @@ public:
         snake.pop();
     }
 
-    SnakePiece tail(){
+    SnakePiece tail() const {
         return snake.front();
     }
 
-    SnakePiece head(){
+    SnakePiece head() const {
         return snake.back();
     }
 
