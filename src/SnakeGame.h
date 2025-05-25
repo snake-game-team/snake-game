@@ -98,16 +98,16 @@ public:
         int nextRow = next.getY();
         int nextCol = next.getX();
 
-        // 벽 또는 몸통 충돌 체크
-        if (map.getChar(nextRow, nextCol) != ' ') { 
-            game_over = true;
-            return;
-        }
-
         auto item = itemManager.checkCollision(next);
         if (item) {  // 아이템 충돌
             handleItemCollision(next, *item);
         } else { // 평범한 이동
+            
+            // 벽 또는 몸통 충돌 체크
+            if (map.getChar(nextRow, nextCol) != ' ') { 
+                game_over = true;
+                return;
+            }
 
             // 꼬리 제거
             map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
