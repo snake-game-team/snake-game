@@ -58,7 +58,7 @@ public:
         auto now = steady_clock::now();
         auto elapsed = duration_cast<seconds>(now - lastGateChangeTime).count();
 
-        if (elapsed >= gateChangeIntervalSec) {
+        if (elapsed >= lifetime) {
             createGates(map);
         }
     }

@@ -5,7 +5,7 @@ private:
     int row;
     int col;
 public:
-    Gate(int y, int x) : row(y), col(x) {}
+    Gate(int y = -1, int x = -1) : row(y), col(x) {}
 
     int getY() const { 
         return row; 

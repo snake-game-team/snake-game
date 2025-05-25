@@ -145,7 +145,6 @@ public:
         snake.addPiece(next);
         snake.head().setIcon('%');
         map.addChar(snake.head().getY(), snake.head().getX(), '%');
-        }
     }
 
     
