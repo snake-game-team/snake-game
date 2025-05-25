@@ -16,8 +16,13 @@ class SnakeGame{
     int moveDelay = 300;
 public:
     SnakeGame(int height, int width) : map(height, width), snake() {
-        map = Map(height, width);
         map.initialize(0);  // 초기시작 0단계
+        snake.initialize();
+        map.addChar(1, 4, '%');  // snack 초기 위치 설정
+        map.addChar(1, 3, '#');
+        map.addChar(1, 2, '#');
+        map.addChar(1, 1, '#');
+        last_move = steady_clock::now();  // 초기화 당시 시간 측정
     }
 
     // 메인 게임 루프
@@ -36,15 +41,11 @@ public:
             }    
         }
     }
-
-    void initialize(int stagenum){
-        map.initialize(stagenum);
-        snake.initialize();
-        map.addChar(1, 4, '%');  // snack 초기 위치 설정
-        map.addChar(1, 3, '#');
-        map.addChar(1, 2, '#');
-        map.addChar(1, 1, '#');
-        last_move = steady_clock::now();  // 초기화 당시 시간 측정
+        
+    // 게임 새로고침
+    void redraw(){   
+        map.updateScore(snake.getSize());
+        map.refresh();
     }
 
     // 게임오버 체크
@@ -146,11 +147,5 @@ public:
                 } 
                 break;
         }
-    }
-
-    // 게임 새로고침
-    void redraw(){   
-        map.updateScore(snake.getSize());
-        map.refresh();
     }
 };
