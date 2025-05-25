@@ -17,7 +17,7 @@ class SnakeGame{
 public:
     SnakeGame(int height, int width) : map(height, width), snake() {
         map = Map(height, width);
-        initialize(0);  // 초기시작 0단계
+        map.initialize(0);  // 초기시작 0단계
     }
 
     // 메인 게임 루프
@@ -146,16 +146,6 @@ public:
                 } 
                 break;
         }
-    }
-
-    // 스테이지에 따라 맵 설정
-    void setStage(int stageNum){
-        map.initialize(stageNum);
-    }
-
-    // 스테이지 반환
-    int getStage(){
-        return map.getStageNum();
     }
 
     // 게임 새로고침
