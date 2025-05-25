@@ -13,6 +13,7 @@ class SnakeGame{
     ItemManager itemManager;
     bool game_over = false;
     steady_clock::time_point last_move;
+    int moveDelay = 300;
 public:
     SnakeGame(int height, int width) : map(height, width), snake() {
         map = Map(height, width);
@@ -85,7 +86,7 @@ public:
     // 일정 시간 경과 확인
     bool isTimeToMove() { 
         auto now = steady_clock::now();
-        return duration_cast<milliseconds>(now - last_move).count() >= 1000;
+        return duration_cast<milliseconds>(now - last_move).count() >= moveDelay;
     }
 
     // 게임 상태 업데이트
