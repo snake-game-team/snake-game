@@ -102,7 +102,7 @@ public:
         if (item) {  // 아이템 충돌
             handleItemCollision(next, *item);
         } else { // 평범한 이동
-            
+
             // 벽 또는 몸통 충돌 체크
             if (map.getChar(nextRow, nextCol) != ' ') { 
                 game_over = true;
@@ -138,13 +138,16 @@ public:
             case ItemType::GROWTH: // 아무 것도 안 함(꼬리 유지)
                 break;
 
-            case ItemType::POISON: // 꼬리 추가 제거
-                map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
-                snake.removePiece();
+            case ItemType::POISON: // 꼬리 두 번 삭제
+                for (int i = 0; i < 2; i++) {
+                    map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
+                    snake.removePiece();
 
-                if(snake.getSize() <= 3){
-                    game_over = true;
-                } 
+                    if(snake.getSize() < 3){
+                        game_over = true;
+                        break;
+                    }    
+                }
                 break;
         }
     }
