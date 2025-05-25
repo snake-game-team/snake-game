@@ -36,7 +36,7 @@ public:
         
             ItemType type = (std::rand() % 2 == 0) ? ItemType::GROWTH : ItemType::POISON; // 랜덤 아이템 종류
             items.emplace_back(y, x, type);  // 벡터에 아이템 추가
-            map.addChar(y, x, items.back().getSymbol()); // 맵에 + 또는 - 추가
+            map.addChar(y, x, items.back().getSymbol()); // 맵에 아이템 추가
         }
     }   
     
