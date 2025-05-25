@@ -56,7 +56,7 @@ public:
     }
 
     // Gate 제거, 최초 생성, 재생성 조건 포함
-    void update(Map& map, int snakeSize) {
+    void update(Map& map, int snakeSize, const Snake& snake) {
         auto now = steady_clock::now();
 
         // 뱀 머리 위치가 Gate 중 하나와 겹치는지 확인
