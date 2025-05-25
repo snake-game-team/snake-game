@@ -10,9 +10,9 @@ private:
     Gate gate1;
     Gate gate2;
     bool gateActive = false;
-
+    int gateUseCount = 0; // 게이트 사용 횟수 카운트
 public:
-    void spawnGates(Map& map) {
+    void createGates(Map& map) {
         std::vector<std::pair<int, int>> wallPositions;
 
         // Wall 목록 수집
@@ -67,5 +67,14 @@ public:
 
     const Gate& getGate2() const {
         return gate2; 
+    }
+
+    // 게이트 사용 시 호출
+    void incrementGateUse() {
+        gateUseCount++;
+    }
+
+    int getGateUseCount() const {
+        return gateUseCount;
     }
 };
