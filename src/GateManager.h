@@ -5,6 +5,8 @@
 #include <vector>
 #include <cstdlib>
 #include <ncurses.h>
+#include <chrono>
+using namespace std::chrono;
 
 class GateManager {
 private:
@@ -13,31 +15,31 @@ private:
     bool gateActive = false;
     int gateUseCount = 0; // 게이트 사용 횟수 카운트
     steady_clock::time_point lastGateChangeTime; 
-    int lifetime = 10; // 게이트 수명(초): gate는 한 쌍으로 시간 관리
+    int lifetime = 15; // 게이트 수명(초): gate는 한 쌍으로 시간 관리
+    int snakeLength = 5;  // 뱀 길이 Gate 생성 최소 기준
+
 public:
+    GateManager() {
+        lastGateChangeTime = steady_clock::now();
+    }
+
     void createGates(Map& map) {
+        removeGates(map); // 기존 Gate 위치 Wall로 복원
 
-        // 기존 Gate 지우기
-        if (gateActive) {
-            map.addChar(gate1.getY(), gate1.getX(), '*'); // Wall으로 복원
-            map.addChar(gate2.getY(), gate2.getX(), '*');
-            gateActive = false;
-        }
-
-        // Wall 위치 다시 탐색 후 Gate 새로 생성
+        // Wall 위치 탐색
         std::vector<std::pair<int, int>> wallPositions;
         for (int y = 0; y < 21; ++y) {
             for (int x = 0; x < 39; ++x) {
                 char ch = map.getChar(y, x);
-                if (ch == '*') { // 일반 Wall만 가능
+                if (ch == '*') {
                     wallPositions.push_back({y, x});
                 }
             }
         }
 
-        if (wallPositions.size() < 2) return; 
+        if (wallPositions.size() < 2) return;
 
-        // 무작위로 두 개 선택
+        // 무작위 두 위치 선택
         auto pos1 = wallPositions[rand() % wallPositions.size()];
         auto pos2 = wallPositions[rand() % wallPositions.size()];
         while (pos1 == pos2) {
@@ -47,49 +49,61 @@ public:
         gate1.setPosition(pos1.first, pos1.second);
         gate2.setPosition(pos2.first, pos2.second);
 
-        // 맵에 표시
-        map.addChar(pos1.first, pos1.second, ACS_CKBOARD); // ACS_CKBOARD =='█'
+        // Gate 표시
+        map.addChar(pos1.first, pos1.second, ACS_CKBOARD);
         map.addChar(pos2.first, pos2.second, ACS_CKBOARD);
         gateActive = true;
     }
 
-    // 일정 시간 지났는지 확인 후 Gate 재생성
-    void update(Map& map) {
+    // Gate 제거, 최초 생성, 재생성 조건 포함
+    void update(Map& map, int snakeSize) {
         auto now = steady_clock::now();
-        auto elapsed = duration_cast<seconds>(now - lastGateChangeTime).count();
 
+        // 뱀 길이가 snakeLength 미만이고 게이트가 있으면 Gate 제거
+        if (gateActive && snakeSize < snakeLength) {
+            removeGates(map);
+            return;
+        }
+
+        // Gate가 아직 없고, 뱀 길이가 snakeLength 이상이면 최초 생성
+        if (!gateActive && snakeSize >= snakeLength) {
+            createGates(map);
+            lastGateChangeTime = now;
+            return;
+        }
+
+        // Gate가 없으면 종료
+        if (!gateActive) return;
+
+        // 일정 시간 지났으면 Gate 재생성
+        auto elapsed = duration_cast<seconds>(now - lastGateChangeTime).count();
         if (elapsed >= lifetime) {
             createGates(map);
+            lastGateChangeTime = now;
         }
+    }
+
+    void removeGates(Map& map) {
+        if (!gateActive) return;
+        map.addChar(gate1.getY(), gate1.getX(), '*'); // Wall 복원
+        map.addChar(gate2.getY(), gate2.getX(), '*');
+        gateActive = false;
     }
 
     bool isGate(int y, int x) const {
         return gate1.isAt(y, x) || gate2.isAt(y, x);
     }
 
-    // 진입 Gate → 진출 Gate 반환
     std::pair<Gate, Gate> getGatePair(int y, int x) const {
-        if (gate1.isAt(y, x)) {
-            return {gate1, gate2};
-        } else if (gate2.isAt(y, x)) {
-            return {gate2, gate1};
-        }
-        return {Gate(), Gate()};
+        if (gate1.isAt(y, x)) return {gate1, gate2};
+        if (gate2.isAt(y, x)) return {gate2, gate1};
+        return {Gate(), Gate()};  // 기본 생성자 있어야 함
     }
 
     bool isActive() const {
         return gateActive;
     }
 
-    const Gate& getGate1() const { 
-        return gate1; 
-    }
-
-    const Gate& getGate2() const {
-        return gate2; 
-    }
-
-    // 게이트 사용 시 호출
     void incrementGateUse() {
         gateUseCount++;
     }
@@ -98,3 +112,4 @@ public:
         return gateUseCount;
     }
 };
+

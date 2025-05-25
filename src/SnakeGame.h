@@ -26,8 +26,6 @@ public:
         map.addChar(1, 2, '#');
         map.addChar(1, 1, '#');
         last_move = steady_clock::now();  // 초기화 당시 시간 측정
-
-        gateManager.createGates(map); // gate 생성
     }
 
     // 메인 게임 루프
@@ -41,10 +39,8 @@ public:
                 // 다음 위치로 이동 및 처리
                 moveSnakeToNext(snake.nextHead());   
                 
-                updateGateIfNeeded(); // 뱀 길이(10) 조건에 따른 Gate 생성
-
                 itemManager.update(map, snake);
-                gateManager.update(map);
+                gateManager.update(map, snake.getSize());
                 redraw();
             }    
         }
@@ -100,13 +96,6 @@ public:
     bool isTimeToMove() { 
         auto now = steady_clock::now();
         return duration_cast<milliseconds>(now - last_move).count() >= moveDelay;
-    }
-
-    // 뱀 길이 조건에 따른 Gate 생성
-    void updateGateIfNeeded() {
-        if (!gateManager.isActive() && snake.getSize() >= 10) {
-            gateManager.createGates(map);
-        }
     }
 
     void moveSnakeToNext(SnakePiece next){
@@ -186,14 +175,18 @@ public:
         Direction outDir = determineExitDirection(exitGate.getY(), exitGate.getX(), inDir);
         snake.setDirection(outDir);
 
+        // 출구 Gate에서 나온 머리 생성
         SnakePiece exitHead = getNextFromGate(exitGate.getY(), exitGate.getX(), outDir);
-
-        // 꼬리 제거 없이 순간이동 처리
-        snake.head().setIcon('#');
+        // 기존 머리는 몸통으로 변경
+        snake.head().setIcon('#'); 
         map.addChar(snake.head().getY(), snake.head().getX(), '#');
         snake.addPiece(exitHead);
         snake.head().setIcon('%');
         map.addChar(snake.head().getY(), snake.head().getX(), '%');
+
+        // 꼬리 제거(머리 생성했으므로)
+        map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
+        snake.removePiece();
     }
 
     // 진출 방향 계산
