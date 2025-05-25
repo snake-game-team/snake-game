@@ -59,6 +59,12 @@ public:
     void update(Map& map, int snakeSize) {
         auto now = steady_clock::now();
 
+        // 뱀 머리 위치가 Gate 중 하나와 겹치는지 확인
+        int headY = snake.head().getY();
+        int headX = snake.head().getX();
+        bool snakeInGate = (gateActive && (gate1.isAt(headY, headX) || gate2.isAt(headY, headX)));
+        if (snakeInGate) return;
+
         // 뱀 길이가 snakeLength 미만이고 게이트가 있으면 Gate 제거
         if (gateActive && snakeSize < snakeLength) {
             removeGates(map);

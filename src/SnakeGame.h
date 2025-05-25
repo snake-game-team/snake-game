@@ -40,7 +40,7 @@ public:
                 moveSnakeToNext(snake.nextHead());   
                 
                 itemManager.update(map, snake);
-                gateManager.update(map, snake.getSize());
+                gateManager.update(map, snake.getSize(), snake);
                 redraw();
             }    
         }
