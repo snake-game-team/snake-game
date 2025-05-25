@@ -131,7 +131,7 @@ public:
         int nextRow = next.getY();
         int nextCol = next.getX();
 
-        if (map.getChar(nextRow, nextCol) != ' ') game_over = true;
+        if (map.getChar(nextRow, nextCol) != ' ') game_over = true; // 벽이거나 자신의 몸통일 때
         else {
             // snake의 꼬리 위치에 있는 icon을 ' '로 설정
             map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
