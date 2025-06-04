@@ -49,6 +49,7 @@ public:
                 redraw();
             }    
         }
+        showGameOver();
     }
         
     // 게임 새로고침
