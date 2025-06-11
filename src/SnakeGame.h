@@ -214,15 +214,22 @@ public:
                     map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
                     snake.removePiece();
 
-                    if(snake.getSize() < 3){
+                    if(snake.getSize() < 4){
                         game_over = true;
                         break;
                     }    
                 }
                 break;
 
-            case SPEED_UP:
+            case ItemType::SPEED_UP:
                 moveDelay = std::max(50, moveDelay - 50);  // 최소 50ms 유지
+                map.addChar(snake.tail().getY(), snake.tail().getX(), ' ');
+                    snake.removePiece();
+
+                    if(snake.getSize() < 4){
+                        game_over = true;
+                        break;
+                    }  
                 break;
         }
     }

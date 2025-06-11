@@ -42,7 +42,7 @@ public:
               }
               if (!exists) {
                   walls.emplace_back(y, x);
-                  map.addChar(y, x, '#');
+                  map.addChar(y, x, '*');
                   break;
               }
           }
